@@ -1,0 +1,515 @@
+const authScreen = document.getElementById("auth-screen");
+const appShell = document.getElementById("app-shell");
+const authForm = document.getElementById("auth-form");
+const modeButtons = document.querySelectorAll(".mode-btn");
+const usernameGroup = document.getElementById("username-group");
+const formTitle = document.getElementById("form-title");
+const submitBtn = document.getElementById("submit-btn");
+const authMessage = document.getElementById("auth-message");
+const chat = document.getElementById("chat-box");
+const input = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const logoutBtn = document.getElementById("logout-btn");
+const themeToggle = document.getElementById("theme-toggle");
+
+let currentMode = "login";
+let registeredUser = null;
+
+function setTheme(theme) {
+    document.body.classList.toggle("light-mode", theme === "light");
+    themeToggle.textContent = theme === "light" ? "☀️" : "🌙";
+    localStorage.setItem("chatbot-theme", theme);
+}
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem("chatbot-theme") || "dark";
+    setTheme(savedTheme);
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    modeButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.mode === mode);
+    });
+
+    usernameGroup.classList.toggle("hidden", mode !== "signup");
+    formTitle.textContent = mode === "signup" ? "Create your account" : "Welcome back";
+    submitBtn.textContent = mode === "signup" ? "Create account" : "Login";
+    authMessage.textContent = "";
+}
+
+function addMessage(text, type) {
+    const div = document.createElement("div");
+    div.className = `message ${type}`;
+    div.textContent = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function reply(msg) {
+    const text = msg.toLowerCase();
+
+    if (text.includes("hi") || text.includes("hello") || text.includes("hey")) return "Hello! I’m ready to help.";
+    if (text.includes("how are you")) return "I’m doing great, thanks for asking.";
+    if (text.includes("bye") || text.includes("goodbye")) return "Goodbye! Come back anytime.";
+    if (text.includes("your name")) return "I’m your AI chatbot.";
+    if (text.includes("who made you")) return "I was created by Hemkesh Ganne.";
+    if (text.includes("thank you") || text.includes("thanks")) return "You’re welcome!";
+    if (text.includes("capital of india")) return "New Delhi.";
+    if (text.includes("capital of france")) return "Paris.";
+    if (text.includes("capital of japan")) return "Tokyo.";
+    if (text.includes("largest planet")) return "Jupiter is the largest planet in our solar system.";
+    if (text.includes("speed of light")) return "Approximately 299,792 km/s.";
+    if (text.includes("national animal of india")) return "The Bengal Tiger.";
+    if (text.includes("olympics held every")) return "Every 4 years.";
+    if (text.includes("fifa world cup")) return "An international football tournament held every four years.";
+    if (text.includes("icc stands for")) return "International Cricket Council.";
+    if (text.includes("bcci stands for")) return "Board of Control for Cricket in India.";
+    if (text.includes("nba stands for")) return "National Basketball Association.";
+    if (text.includes("largest volcano in solar system")) return "Olympus Mons.";
+    if (text.includes("first artificial satellite")) return "Sputnik 1.";
+    if (text.includes("first satellite of india")) return "Aryabhata.";
+    if (text.includes("isro stands for")) return "Indian Space Research Organisation.";
+    if (text.includes("nasa stands for")) return "National Aeronautics and Space Administration.";
+    if (text.includes("who discovered gravity")) return "Isaac Newton.";
+    if (text.includes("who invented radio")) return "Guglielmo Marconi.";
+    if (text.includes("who invented television")) return "John Logie Baird.";
+    if (text.includes("who invented steam engine")) return "James Watt.";
+    if (text.includes("who invented printing press")) return "Johannes Gutenberg.";
+    if (text.includes("which is the largest state by population")) return "Uttar Pradesh.";
+    if (text.includes("smallest union territory")) return "Lakshadweep.";
+    if (text.includes("largest union territory")) return "Ladakh.";
+    if (text.includes("river of sorrow")) return "Hwang Ho (Yellow River).";
+    if (text.includes("land of rising sun")) return "Japan.";
+    if (text.includes("land of midnight sun")) return "Norway.";
+    if (text.includes("land of thousand lakes")) return "Finland.";
+    if (text.includes("city that never sleeps")) return "New York City.";
+    if (text.includes("white city")) return "Belgrade.";
+    if (text.includes("blue city of india")) return "Jodhpur.";
+    if (text.includes("largest ocean")) return "The Pacific Ocean.";
+if (text.includes("smallest ocean")) return "The Arctic Ocean.";
+if (text.includes("largest desert")) return "Antarctica is the largest desert in the world.";
+if (text.includes("largest hot desert")) return "The Sahara Desert.";
+if (text.includes("longest river")) return "The Nile River.";
+if (text.includes("highest mountain")) return "Mount Everest.";
+if (text.includes("deepest ocean")) return "The Pacific Ocean.";
+if (text.includes("deepest point on earth")) return "The Challenger Deep.";
+if (text.includes("largest continent")) return "Asia.";
+if (text.includes("smallest continent")) return "Australia.";
+if (text.includes("how many continents")) return "There are 7 continents.";
+if (text.includes("how many oceans")) return "There are 5 oceans.";
+if (text.includes("how many states in india")) return "India has 28 states.";
+if (text.includes("how many union territories in india")) return "India has 8 Union Territories.";
+if (text.includes("national bird of india")) return "The Indian Peacock.";
+if (text.includes("national flower of india")) return "The Lotus.";
+if (text.includes("national fruit of india")) return "The Mango.";
+if (text.includes("national tree of india")) return "The Banyan Tree.";
+if (text.includes("national anthem of india")) return "'Jana Gana Mana'.";
+if (text.includes("national song of india")) return "'Vande Mataram'.";
+if (text.includes("who is father of nation")) return "Mahatma Gandhi.";
+if (text.includes("who wrote national anthem")) return "Rabindranath Tagore.";
+if (text.includes("who wrote ramayana")) return "Valmiki.";
+if (text.includes("who wrote mahabharata")) return "Ved Vyasa.";
+if (text.includes("who invented telephone")) return "Alexander Graham Bell.";
+if (text.includes("who invented computer")) return "Charles Babbage.";
+if (text.includes("father of computer")) return "Charles Babbage.";
+if (text.includes("father of science")) return "Galileo Galilei.";
+if (text.includes("father of mathematics")) return "Archimedes.";
+if (text.includes("father of biology")) return "Aristotle.";
+if (text.includes("father of physics")) return "Isaac Newton.";
+if (text.includes("father of chemistry")) return "Antoine Lavoisier.";
+if (text.includes("chemical symbol of gold")) return "Au.";
+if (text.includes("chemical symbol of silver")) return "Ag.";
+if (text.includes("chemical symbol of iron")) return "Fe.";
+if (text.includes("chemical symbol of sodium")) return "Na.";
+if (text.includes("chemical symbol of potassium")) return "K.";
+if (text.includes("chemical symbol of oxygen")) return "O.";
+if (text.includes("chemical symbol of hydrogen")) return "H.";
+if (text.includes("chemical symbol of mercury")) return "Hg.";
+if (text.includes("chemical symbol of lead")) return "Pb.";
+if (text.includes("chemical symbol of copper")) return "Cu.";
+if (text.includes("boiling point of water")) return "100°C.";
+if (text.includes("freezing point of water")) return "0°C.";
+if (text.includes("planet known as red planet")) return "Mars.";
+if (text.includes("planet known as blue planet")) return "Earth.";
+if (text.includes("morning star")) return "Venus.";
+if (text.includes("evening star")) return "Venus.";
+if (text.includes("largest moon")) return "Ganymede.";
+if (text.includes("earth satellite")) return "The Moon.";
+if (text.includes("how many planets")) return "There are 8 planets in the Solar System.";
+if (text.includes("closest planet to sun")) return "Mercury.";
+if (text.includes("farthest planet from sun")) return "Neptune.";
+if (text.includes("largest mammal")) return "Blue Whale.";
+if (text.includes("largest bird")) return "Ostrich.";
+if (text.includes("fastest land animal")) return "Cheetah.";
+if (text.includes("king of jungle")) return "Lion.";
+if (text.includes("ship of desert")) return "Camel.";
+if (text.includes("largest reptile")) return "Saltwater Crocodile.";
+if (text.includes("largest fish")) return "Whale Shark.";
+if (text.includes("largest snake")) return "Green Anaconda.";
+if (text.includes("smallest bird")) return "Bee Hummingbird.";
+if (text.includes("national animal of australia")) return "Red Kangaroo.";
+if (text.includes("currency of india")) return "Indian Rupee.";
+if (text.includes("currency of usa")) return "US Dollar.";
+if (text.includes("currency of japan")) return "Japanese Yen.";
+if (text.includes("currency of china")) return "Chinese Yuan.";
+if (text.includes("currency of uk")) return "Pound Sterling.";
+if (text.includes("currency of france")) return "Euro.";
+if (text.includes("currency of russia")) return "Russian Ruble.";
+if (text.includes("currency of canada")) return "Canadian Dollar.";
+if (text.includes("currency of australia")) return "Australian Dollar.";
+if (text.includes("currency of uae")) return "UAE Dirham.";
+if (text.includes("largest country")) return "Russia.";
+if (text.includes("smallest country")) return "Vatican City.";
+if (text.includes("most populated country")) return "India.";
+if (text.includes("capital of usa")) return "Washington, D.C.";
+if (text.includes("capital of china")) return "Beijing.";
+if (text.includes("capital of germany")) return "Berlin.";
+if (text.includes("capital of australia")) return "Canberra.";
+if (text.includes("capital of canada")) return "Ottawa.";
+if (text.includes("capital of russia")) return "Moscow.";
+if (text.includes("capital of italy")) return "Rome.";
+if (text.includes("capital of spain")) return "Madrid.";
+if (text.includes("capital of sri lanka")) return "Sri Jayawardenepura Kotte.";
+if (text.includes("capital of pakistan")) return "Islamabad.";
+if (text.includes("capital of bangladesh")) return "Dhaka.";
+if (text.includes("capital of nepal")) return "Kathmandu.";
+if (text.includes("capital of bhutan")) return "Thimphu.";
+if (text.includes("capital of brazil")) return "Brasília.";
+if (text.includes("capital of south korea")) return "Seoul.";
+if (text.includes("capital of north korea")) return "Pyongyang.";
+if (text.includes("capital of egypt")) return "Cairo.";
+if (text.includes("capital of south africa")) return "Pretoria, Cape Town, and Bloemfontein.";
+if (text.includes("capital of new zealand")) return "Wellington.";
+if (text.includes("capital of mexico")) return "Mexico City.";
+if (text.includes("capital of argentina")) return "Buenos Aires.";
+if (text.includes("largest democracy")) return "India.";
+if (text.includes("who painted mona lisa")) return "Leonardo da Vinci.";
+if (text.includes("who discovered america")) return "Christopher Columbus.";
+if (text.includes("who discovered penicillin")) return "Alexander Fleming.";
+if (text.includes("first man on moon")) return "Neil Armstrong.";
+if (text.includes("first woman in space")) return "Valentina Tereshkova.";
+if (text.includes("first indian in space")) return "Rakesh Sharma.";
+if (text.includes("first president of india")) return "Dr. Rajendra Prasad.";
+if (text.includes("first prime minister of india")) return "Jawaharlal Nehru.";
+if (text.includes("first woman prime minister of india")) return "Indira Gandhi.";
+if (text.includes("first indian woman in space")) return "Kalpana Chawla.";
+if (text.includes("current prime minister of india")) return "Narendra Modi.";
+if (text.includes("current president of india")) return "Droupadi Murmu.";
+if (text.includes("largest country by area")) return "Russia.";
+if (text.includes("smallest planet")) return "Mercury.";
+if (text.includes("largest planet")) return "Jupiter.";
+if (text.includes("hottest planet")) return "Venus.";
+if (text.includes("coldest planet")) return "Uranus.";
+if (text.includes("ringed planet")) return "Saturn is famous for its rings.";
+if (text.includes("earth is which planet")) return "Earth is the third planet from the Sun.";
+if (text.includes("sun is a")) return "The Sun is a star.";
+if (text.includes("moon is a")) return "The Moon is Earth's natural satellite.";
+if (text.includes("how many bones in human body")) return "206 bones.";
+if (text.includes("largest organ")) return "The skin.";
+if (text.includes("largest internal organ")) return "The liver.";
+if (text.includes("smallest bone")) return "The stapes in the ear.";
+if (text.includes("largest bone")) return "The femur.";
+if (text.includes("how many teeth")) return "Adults have 32 teeth.";
+if (text.includes("how many muscles")) return "About 600 muscles.";
+if (text.includes("human heart chambers")) return "4 chambers.";
+if (text.includes("blood is pumped by")) return "The heart.";
+if (text.includes("red blood cells")) return "Red blood cells carry oxygen.";
+if (text.includes("white blood cells")) return "White blood cells fight infections.";
+if (text.includes("vitamin c source")) return "Oranges, lemons, and other citrus fruits.";
+if (text.includes("vitamin d source")) return "Sunlight is a major source of Vitamin D.";
+if (text.includes("largest gland")) return "The liver.";
+if (text.includes("master gland")) return "The pituitary gland.";
+if (text.includes("how many days in leap year")) return "366 days.";
+if (text.includes("how many months in a year")) return "12 months.";
+if (text.includes("how many weeks in a year")) return "52 weeks.";
+if (text.includes("how many hours in a day")) return "24 hours.";
+if (text.includes("how many minutes in an hour")) return "60 minutes.";
+if (text.includes("how many seconds in a minute")) return "60 seconds.";
+if (text.includes("largest festival in india")) return "Diwali is one of the largest festivals.";
+if (text.includes("festival of lights")) return "Diwali.";
+if (text.includes("festival of colors")) return "Holi.";
+if (text.includes("who wrote harry potter")) return "J.K. Rowling.";
+if (text.includes("who wrote romeo and juliet")) return "William Shakespeare.";
+if (text.includes("who wrote hamlet")) return "William Shakespeare.";
+if (text.includes("who wrote the jungle book")) return "Rudyard Kipling.";
+if (text.includes("who wrote wings of fire")) return "A.P.J. Abdul Kalam.";
+if (text.includes("missile man of india")) return "Dr. A.P.J. Abdul Kalam.";
+if (text.includes("iron man of india")) return "Sardar Vallabhbhai Patel.";
+if (text.includes("nightingale of india")) return "Sarojini Naidu.";
+if (text.includes("grand old man of india")) return "Dadabhai Naoroji.";
+if (text.includes("who invented bulb")) return "Thomas Edison.";
+if (text.includes("who invented airplane")) return "The Wright Brothers.";
+if (text.includes("who invented internet")) return "Vinton Cerf and Bob Kahn are considered the fathers of the Internet.";
+if (text.includes("who invented electricity")) return "Electricity was discovered, not invented. Benjamin Franklin's experiments were important.";
+if (text.includes("who discovered oxygen")) return "Joseph Priestley.";
+if (text.includes("who discovered electron")) return "J. J. Thomson.";
+if (text.includes("who discovered neutron")) return "James Chadwick.";
+if (text.includes("who discovered proton")) return "Ernest Rutherford.";
+if (text.includes("chemical formula of water")) return "H₂O.";
+if (text.includes("chemical formula of carbon dioxide")) return "CO₂.";
+if (text.includes("chemical formula of methane")) return "CH₄.";
+if (text.includes("chemical formula of ammonia")) return "NH₃.";
+if (text.includes("chemical formula of common salt")) return "NaCl.";
+if (text.includes("chemical formula of baking soda")) return "NaHCO₃.";
+if (text.includes("chemical formula of sulphuric acid")) return "H₂SO₄.";
+if (text.includes("chemical formula of hydrochloric acid")) return "HCl.";
+if (text.includes("chemical formula of glucose")) return "C₆H₁₂O₆.";
+if (text.includes("who is known as flying sikh")) return "Milkha Singh.";
+if (text.includes("god of cricket")) return "Sachin Tendulkar.";
+if (text.includes("little master")) return "Sachin Tendulkar.";
+if (text.includes("captain cool")) return "MS Dhoni.";
+if (text.includes("run machine")) return "Virat Kohli.";
+if (text.includes("fastest man in the world")) return "Usain Bolt.";
+if (text.includes("who won first cricket world cup")) return "West Indies in 1975.";
+if (text.includes("first t20 world cup winner")) return "India in 2007.";
+if (text.includes("how many players in football")) return "11 players per team.";
+if (text.includes("how many players in cricket")) return "11 players per team.";
+if (text.includes("how many players in basketball")) return "5 players per team.";
+if (text.includes("how many players in volleyball")) return "6 players per team.";
+if (text.includes("how many players in kabaddi")) return "7 players per team.";
+if (text.includes("how many players in hockey")) return "11 players per team.";
+if (text.includes("first olympics")) return "The first modern Olympics were held in Athens in 1896.";
+if (text.includes("who invented chess")) return "Chess originated in India.";
+if (text.includes("old name of chess")) return "Chaturanga.";
+if (text.includes("national game of india")) return "India has no officially declared national game.";
+if (text.includes("national game of usa")) return "Baseball is often considered the national pastime.";
+if (text.includes("largest stadium in the world")) return "Narendra Modi Stadium.";
+if (text.includes("longest wall")) return "The Great Wall of China.";
+if (text.includes("largest waterfall")) return "Victoria Falls is the world's largest sheet of falling water.";
+if (text.includes("highest waterfall")) return "Angel Falls.";
+if (text.includes("largest island")) return "Greenland.";
+if (text.includes("smallest ocean")) return "Arctic Ocean.";
+if (text.includes("largest lake")) return "The Caspian Sea.";
+if (text.includes("largest freshwater lake")) return "Lake Superior.";
+if (text.includes("deepest lake")) return "Lake Baikal.";
+if (text.includes("longest mountain range")) return "The Andes.";
+if (text.includes("largest rainforest")) return "The Amazon Rainforest.";
+if (text.includes("largest coral reef")) return "The Great Barrier Reef.";
+if (text.includes("where is taj mahal")) return "Agra, India.";
+if (text.includes("who built taj mahal")) return "Shah Jahan.";
+if (text.includes("where is eiffel tower")) return "Paris, France.";
+if (text.includes("where is statue of liberty")) return "New York, USA.";
+if (text.includes("where is great wall")) return "China.";
+if (text.includes("where is pyramids")) return "Egypt.";
+if (text.includes("where is burj khalifa")) return "Dubai, UAE.";
+if (text.includes("tallest building")) return "Burj Khalifa.";
+if (text.includes("largest airport")) return "King Fahd International Airport.";
+if (text.includes("busiest airport")) return "Hartsfield–Jackson Atlanta International Airport.";
+if (text.includes("largest library")) return "The Library of Congress.";
+if (text.includes("largest museum")) return "The Louvre is the world's most visited museum.";
+if (text.includes("capital of afghanistan")) return "Kabul.";
+if (text.includes("capital of albania")) return "Tirana.";
+if (text.includes("capital of algeria")) return "Algiers.";
+if (text.includes("capital of argentina")) return "Buenos Aires.";
+if (text.includes("capital of austria")) return "Vienna.";
+if (text.includes("capital of belgium")) return "Brussels.";
+if (text.includes("capital of belarus")) return "Minsk.";
+if (text.includes("capital of bolivia")) return "Sucre.";
+if (text.includes("capital of cambodia")) return "Phnom Penh.";
+if (text.includes("capital of chile")) return "Santiago.";
+if (text.includes("capital of colombia")) return "Bogotá.";
+if (text.includes("capital of croatia")) return "Zagreb.";
+if (text.includes("capital of cuba")) return "Havana.";
+if (text.includes("capital of denmark")) return "Copenhagen.";
+if (text.includes("capital of finland")) return "Helsinki.";
+if (text.includes("capital of greece")) return "Athens.";
+if (text.includes("capital of hungary")) return "Budapest.";
+if (text.includes("capital of iceland")) return "Reykjavik.";
+if (text.includes("capital of indonesia")) return "Jakarta.";
+if (text.includes("capital of iran")) return "Tehran.";
+if (text.includes("capital of iraq")) return "Baghdad.";
+if (text.includes("capital of ireland")) return "Dublin.";
+if (text.includes("capital of israel")) return "Jerusalem.";
+if (text.includes("capital of kenya")) return "Nairobi.";
+if (text.includes("capital of kuwait")) return "Kuwait City.";
+if (text.includes("capital of malaysia")) return "Kuala Lumpur.";
+if (text.includes("capital of maldives")) return "Malé.";
+if (text.includes("capital of mongolia")) return "Ulaanbaatar.";
+if (text.includes("capital of morocco")) return "Rabat.";
+if (text.includes("capital of myanmar")) return "Naypyidaw.";
+if (text.includes("capital of netherlands")) return "Amsterdam.";
+if (text.includes("capital of nigeria")) return "Abuja.";
+if (text.includes("capital of norway")) return "Oslo.";
+if (text.includes("capital of peru")) return "Lima.";
+if (text.includes("capital of philippines")) return "Manila.";
+if (text.includes("capital of poland")) return "Warsaw.";
+if (text.includes("capital of portugal")) return "Lisbon.";
+if (text.includes("capital of qatar")) return "Doha.";
+if (text.includes("capital of romania")) return "Bucharest.";
+if (text.includes("capital of saudi arabia")) return "Riyadh.";
+if (text.includes("capital of singapore")) return "Singapore.";
+if (text.includes("capital of sweden")) return "Stockholm.";
+if (text.includes("capital of switzerland")) return "Bern.";
+if (text.includes("capital of thailand")) return "Bangkok.";
+if (text.includes("capital of turkey")) return "Ankara.";
+if (text.includes("capital of ukraine")) return "Kyiv.";
+if (text.includes("capital of vietnam")) return "Hanoi.";
+if (text.includes("capital of zimbabwe")) return "Harare.";
+
+if (text.includes("2+2")) return "4.";
+if (text.includes("5+5")) return "10.";
+if (text.includes("10+10")) return "20.";
+if (text.includes("100 divided by 10")) return "10.";
+if (text.includes("square root of 64")) return "8.";
+if (text.includes("square root of 81")) return "9.";
+if (text.includes("square root of 100")) return "10.";
+if (text.includes("pi value")) return "Approximately 3.14159.";
+if (text.includes("largest prime number")) return "There is no largest prime number.";
+if (text.includes("even number")) return "An even number is divisible by 2.";
+if (text.includes("odd number")) return "An odd number is not divisible by 2.";
+
+if (text.includes("html stands for")) return "HyperText Markup Language.";
+if (text.includes("css stands for")) return "Cascading Style Sheets.";
+if (text.includes("js stands for")) return "JavaScript.";
+if (text.includes("python creator")) return "Guido van Rossum.";
+if (text.includes("java creator")) return "James Gosling.";
+if (text.includes("who created linux")) return "Linus Torvalds.";
+if (text.includes("who founded microsoft")) return "Bill Gates and Paul Allen.";
+if (text.includes("who founded apple")) return "Steve Jobs, Steve Wozniak, and Ronald Wayne.";
+if (text.includes("who founded google")) return "Larry Page and Sergey Brin.";
+if (text.includes("binary system")) return "A number system using only 0 and 1.";
+if (text.includes("ram full form")) return "Random Access Memory.";
+if (text.includes("rom full form")) return "Read Only Memory.";
+if (text.includes("cpu full form")) return "Central Processing Unit.";
+if (text.includes("gpu full form")) return "Graphics Processing Unit.";
+if (text.includes("ssd full form")) return "Solid State Drive.";
+if (text.includes("hdd full form")) return "Hard Disk Drive.";
+if (text.includes("usb full form")) return "Universal Serial Bus.";
+if (text.includes("wifi full form")) return "Wireless Fidelity.";
+
+if (text.includes("tell me a joke")) return "Why don't scientists trust atoms? Because they make up everything!";
+if (text.includes("another joke")) return "Why was the computer cold? It forgot to close its Windows.";
+if (text.includes("fun fact")) return "Honey never spoils.";
+if (text.includes("another fun fact")) return "Octopuses have three hearts.";
+if (text.includes("tell me a riddle")) return "What has keys but can't open locks? A piano.";
+if (text.includes("answer")) return "If you're talking about the riddle, it's a piano.";
+
+if (text.includes("who are you")) return "I'm your AI chatbot.";
+if (text.includes("are you human")) return "No, I'm an AI.";
+if (text.includes("are you real")) return "I'm a virtual AI assistant.";
+if (text.includes("can you help me")) return "Of course! Ask me anything.";
+if (text.includes("good morning")) return "Good morning! Have a wonderful day!";
+if (text.includes("good afternoon")) return "Good afternoon!";
+if (text.includes("good evening")) return "Good evening!";
+if (text.includes("good night")) return "Good night! Sleep well.";
+if (text.includes("i love you")) return "❤️ Thank you! I'm glad you enjoy chatting with me.";
+if (text.includes("what can you do")) return "I can answer questions, tell jokes, solve simple problems, and chat with you.";
+if (text.includes("who is your boss")) return "My developer built me!";
+if (text.includes("do you sleep")) return "Nope! I'm always awake.";
+if (text.includes("do you eat")) return "No, I don't need food.";
+if (text.includes("do you dream")) return "Only in binary. 😄";
+if (text.includes("how old are you")) return "I'm as old as my latest update.";
+
+if (text.includes("rock paper scissors")) return "I choose Rock!";
+if (text.includes("flip a coin")) return Math.random() < 0.5 ? "Heads!" : "Tails!";
+if (text.includes("roll a dice")) return "🎲 " + (Math.floor(Math.random()*6)+1);
+if (text.includes("pick a number")) return String(Math.floor(Math.random()*100)+1);
+if (text.includes("favorite color")) return "Blue!";
+if (text.includes("favorite animal")) return "Dogs are awesome!";
+if (text.includes("favorite game")) return "Minecraft is fun!";
+if (text.includes("favorite programming language")) return "JavaScript!";
+if (text.includes("favorite food")) return "I don't eat, but pizza looks delicious!";
+if (text.includes("favorite movie")) return "I like science-fiction movies.";
+
+if (text.includes("earth revolves around")) return "The Sun.";
+if (text.includes("sun rises in")) return "The East.";
+if (text.includes("sun sets in")) return "The West.";
+if (text.includes("largest star")) return "UY Scuti is one of the largest known stars.";
+if (text.includes("nearest star")) return "The Sun.";
+if (text.includes("nearest galaxy")) return "The Andromeda Galaxy is the nearest major galaxy.";
+if (text.includes("milky way")) return "Our home galaxy.";
+if (text.includes("black hole")) return "A region in space where gravity is extremely strong.";
+if (text.includes("asteroid")) return "A rocky object orbiting the Sun.";
+if (text.includes("comet")) return "A celestial body made of ice, dust, and rock.";
+if (text.includes("meteor")) return "A space rock burning in Earth's atmosphere.";
+if (text.includes("galaxy")) return "A massive collection of stars, gas, and dust.";
+if (text.includes("universe")) return "Everything that exists: space, time, matter, and energy.";
+
+    return "That’s a great question. I can help with facts, greetings, or simple chat.";
+}
+
+function handleSend() {
+    const userText = input.value.trim();
+    if (!userText) return;
+
+    addMessage(userText, "user");
+    input.value = "";
+    setTimeout(() => addMessage(reply(userText), "bot"), 250);
+}
+
+function showApp() {
+    authScreen.classList.add("hidden");
+    appShell.classList.remove("hidden");
+}
+
+function showAuth() {
+    appShell.classList.add("hidden");
+    authScreen.classList.remove("hidden");
+    authForm.reset();
+    authMessage.textContent = "";
+}
+
+modeButtons.forEach((button) => {
+    button.addEventListener("click", () => setMode(button.dataset.mode));
+});
+
+authForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const username = document.getElementById("username").value.trim();
+
+    if (!email || !password) {
+        authMessage.textContent = "Please fill in your email and password.";
+        return;
+    }
+
+    if (currentMode === "signup") {
+        if (!username) {
+            authMessage.textContent = "Please enter your name to create an account.";
+            return;
+        }
+
+        registeredUser = { username, email, password };
+        authMessage.textContent = `Account created for ${username}. You can sign in now.`;
+        setMode("login");
+        authForm.reset();
+        return;
+    }
+
+    if (!registeredUser) {
+        authMessage.textContent = "No account has been created yet. Please sign up first.";
+        return;
+    }
+
+    if (registeredUser.email === email && registeredUser.password === password) {
+        authMessage.textContent = "";
+        showApp();
+        addMessage(`Welcome back, ${registeredUser.username}!`, "bot");
+    } else {
+        authMessage.textContent = "That email or password does not match the account.";
+    }
+});
+
+sendBtn.addEventListener("click", handleSend);
+input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        handleSend();
+    }
+});
+
+logoutBtn.addEventListener("click", () => {
+    showAuth();
+    setMode("login");
+});
+
+themeToggle.addEventListener("click", () => {
+    const nextTheme = document.body.classList.contains("light-mode") ? "dark" : "light";
+    setTheme(nextTheme);
+});
+
+setMode("login");
+initializeTheme();

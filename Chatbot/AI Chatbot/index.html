@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-In Page
+    </title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light and dark mode">🌙</button>
+
+    <div id="auth-screen" class="auth-screen">
+        <div class="auth-card">
+            <div class="brand-row">
+                <div class="brand-badge">AI</div>
+                <div>
+                    <p class="eyebrow">Protected access</p>
+                    <h1 id="form-title">Welcome back</h1>
+                </div>
+            </div>
+
+            <p class="subtitle">Create an account or sign in to unlock the chatbot experience. This demo keeps the session in memory only.</p>
+
+            <div class="mode-switch" role="tablist" aria-label="Authentication mode">
+                <button class="mode-btn active" type="button" data-mode="login">Login</button>
+                <button class="mode-btn" type="button" data-mode="signup">Sign up</button>
+            </div>
+
+            <form id="auth-form" class="auth-form">
+                <div id="username-group" class="field hidden">
+                    <label for="username">Full name</label>
+                    <input id="username" name="username" type="text" placeholder="Alex Morgan">
+                </div>
+
+                <div class="field">
+                    <label for="email">Email address</label>
+                    <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input id="password" name="password" type="password" placeholder="Enter a strong password" required>
+                </div>
+
+                <button class="submit-btn" type="submit" id="submit-btn">Login</button>
+            </form>
+
+            <p id="auth-message" class="auth-message" aria-live="polite"></p>
+        </div>
+    </div>
+
+    <div id="app-shell" class="app-shell hidden">
+        <div class="chat-container">
+            <div class="header">
+                <div class="header-title">
+                    <span class="header-badge">AI</span>
+                    <span>My Chatbot</span>
+                </div>
+                <button id="logout-btn" class="logout-btn" type="button">Logout</button>
+            </div>
+
+            <div id="chat-box">
+                <div class="message bot">Hello! I’m ready to help. Ask me anything.</div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Ask something...">
+                <button id="send-btn" type="button">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
